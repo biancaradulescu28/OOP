@@ -13,15 +13,16 @@ public:
     void setNext(Nod *urm);
     char getInfo() const;
     Nod *getNext() const;
+    ~Nod();
 
 };
 Nod::Nod(){
     this->info = 0;
     this->next = nullptr;//dc nu e NULL??
 }
-Nod::Nod(char info){
-    this->info = info;
-    this->next = nullptr;
+Nod::Nod(char c){
+    info = c;
+    next = nullptr;
 }//????
 
 void Nod::setInfo(char date) {
@@ -39,7 +40,9 @@ char Nod::getInfo() const {
 Nod *Nod::getNext() const {
     return next;
 }
-
+Nod::~Nod(){
+    delete next;
+}
 
 class Stiva_de_caractere{
 private:
@@ -55,8 +58,23 @@ public:
     friend istream& operator>> (istream&, Stiva_de_caractere&);
     friend ostream& operator<< (ostream&, Stiva_de_caractere&);
     string inversare(string&);
-    Stiva_de_caractere operator-(Stiva_de_caractere&);
+    Stiva_de_caractere operator-(Stiva_de_caractere& stiva){
+        Stiva_de_caractere S;
+        while(isempty() != 0 || stiva.isempty() != 0){
 
+            if(getVarf()->getInfo()> stiva.getVarf()->getInfo()){
+                S.push(getVarf()->getInfo());
+                pop();
+                stiva.pop();
+            }
+            else {
+                S.push(stiva.getVarf()->getInfo());
+                pop();
+                stiva.pop();
+            }
+        }
+        return S;
+    }
 
 };
 
@@ -71,19 +89,27 @@ Stiva_de_caractere::~Stiva_de_caractere(){
 
     while (vf != nullptr){
         Nod *curent = vf;
-        vf = vf -> getNext();//delete?
-
+        vf = vf -> getNext();
+        delete curent;
     }
+    delete vf;
 }
 
 void Stiva_de_caractere::push(char c){
 
-    Nod *nou = new Nod();
-    nou -> setInfo(c);
-    nou -> setNext(vf);
-    vf = nou;
+    if(vf == nullptr)
+    {
+        Nod *nou = new Nod();
+        nou -> setInfo(c);
+        vf = nou;
 
-//    delete nou;//trebuie? nu merge bine
+    }
+    else {
+        Nod *nou = new Nod();
+        nou->setNext(vf);
+        nou->setInfo(c);
+        vf = nou;
+    }
 }
 
 void Stiva_de_caractere::pop(){//corect?
@@ -91,7 +117,6 @@ void Stiva_de_caractere::pop(){//corect?
     else{
         Nod *iese = vf;
         vf = vf -> getNext();
-        cout<<iese->getInfo()<<"\n";
     }
 }
 
@@ -112,7 +137,7 @@ istream& operator>> (istream& in, Stiva_de_caractere& s)
     char c;
     int nr;
     in>>nr;
-    while(nr>0){
+    while(nr){
         in>>c;
         s.push(c);
         nr--;
@@ -122,14 +147,14 @@ istream& operator>> (istream& in, Stiva_de_caractere& s)
 
 ostream& operator<< (ostream& out, Stiva_de_caractere &s)//nu afiseaza
 {
-    while(!s.isempty())
+    while(s.isempty()!=0)
     {
         out<<s.getVarf()->getInfo();
         s.pop();
     }
     return out;
 }
-string Stiva_de_caractere::inversare(string &inv){//nu returneaza ce trb
+string Stiva_de_caractere::inversare(string &inv){
 
     int i,n;
     n = inv.size();
@@ -145,30 +170,30 @@ string Stiva_de_caractere::inversare(string &inv){//nu returneaza ce trb
 
 }
 
-Stiva_de_caractere Stiva_de_caractere::operator-(Stiva_de_caractere &stiva){
-    Stiva_de_caractere S;
-    while(!isempty() || !stiva.isempty()){
-
-        if(getVarf()->getInfo()> stiva.getVarf()->getInfo()){
-            S.push(getVarf()->getInfo());
-            pop();
-            stiva.pop();
-        }
-        else {
-            S.push(stiva.getVarf()->getInfo());
-            pop();
-            stiva.pop();
-        }
-    }
-    return S;
-}
+//Stiva_de_caractere Stiva_de_caractere::operator-(Stiva_de_caractere &stiva){
+//    Stiva_de_caractere S;
+//    while(isempty() != 0 || stiva.isempty() != 0){
+//
+//        if(getVarf()->getInfo()> stiva.getVarf()->getInfo()){
+//            S.push(getVarf()->getInfo());
+//            pop();
+//            stiva.pop();
+//        }
+//        else {
+//            S.push(stiva.getVarf()->getInfo());
+//            pop();
+//            stiva.pop();
+//        }
+//    }
+//    return S;
+//}
 
 
 int main(){
     char chr;
     string s,sir;
 
-    Stiva_de_caractere S1,S2,S3,S4,S5;
+    Stiva_de_caractere S1,S2,S3,S4,S5,S6;
     if(S1.isempty() == 1){cout<<"S1 nu e goala\n";}
     else cout<<"S1 e goala\n";
     cin>>chr;
@@ -179,36 +204,44 @@ int main(){
     S1.pop();
     if(S1.isempty() == 1){cout<<"S1 nu e goala\n";}
     else cout<<"S1 e goala\n";
-    cin>>chr;
-    cin>>chr;
-    cout<<"Supraincarcarea operatorului <<"<<S1<<"\n";
     cin>>s;
     sir = S2.inversare(s);
     cout<<"Inversul sirului s este "<<sir<<"\n";
-
+    cin>>chr;
+    S1.push(chr);
+    cin>>chr;
+    S1.push(chr);
+    if(S1.isempty() == 1){cout<<"S1 nu e goala\n";}
+    else cout<<"S1 e goala\n";
+    cout<<"Supraincarcarea operatorului << "<<S1<<"\n";
     cin>>S3;
-    cout<<S3;
-    cin>>S4;
-    S5 = S3-S4;
-    cout<<"Supraincarcarea operatorului - este:"<<S5<<"\n";
+    cout<<S3<<"\n";
+    S4.push('E');
+    S4.push('X');
+    S4.push('A');
+    S4.push('M');
+    S4.push('E');
+    S4.push('N');
+    cout<<S4<<"\n";
+    if(S4.isempty() == 1){cout<<"S4 nu e goala\n";}
+    else cout<<"S4 e goala\n";
 
-//    S3.push('E');
-//    S3.push('X');
-//    S3.push('A');
-//    S3.push('M');
-//    S3.push('E');
-//    S3.push('N');
-//
-//    S4.push('P');
-//    S4.push('O');
-//    S4.push('O');
-//    S4.push('L');
-//    S4.push('A');
-//    S4.push('B');
-//    S4.push('O');
-//    S4.push('R');
-//    S4.push('A');
-//    S4.push('T');
-//    S4.push('O');
-//    S4.push('R');
+    S5.push('P');
+    S5.push('O');
+    S5.push('O');
+    S5.push('L');
+    S5.push('A');
+    S5.push('B');
+    S5.push('O');
+    S5.push('R');
+    S5.push('A');
+    S5.push('T');
+    S5.push('O');
+    S5.push('R');
+
+    S6 = S4-S5;
+    cout<<"Supraincarcarea operatorului - este:"<<S6<<"\n";
+
+
+
 }
