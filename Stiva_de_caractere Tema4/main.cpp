@@ -8,7 +8,7 @@ private:
     Nod *next;
 public:
     Nod();
-    explicit Nod(char);//dc explicit?
+    Nod(char);
     void setInfo(char date);
     void setNext(Nod *urm);
     char getInfo() const;
@@ -18,12 +18,12 @@ public:
 };
 Nod::Nod(){
     this->info = 0;
-    this->next = nullptr;//dc nu e NULL??
+    this->next = nullptr;
 }
 Nod::Nod(char c){
     info = c;
     next = nullptr;
-}//????
+}
 
 void Nod::setInfo(char date) {
     Nod::info = date;
@@ -58,24 +58,7 @@ public:
     friend istream& operator>> (istream&, Stiva_de_caractere&);
     friend ostream& operator<< (ostream&, Stiva_de_caractere&);
     string inversare(string&);
-    Stiva_de_caractere operator-(Stiva_de_caractere& stiva){
-        Stiva_de_caractere S;
-        while(isempty() != 0 || stiva.isempty() != 0){
-
-            if(getVarf()->getInfo()> stiva.getVarf()->getInfo()){
-                S.push(getVarf()->getInfo());
-                pop();
-                stiva.pop();
-            }
-            else {
-                S.push(stiva.getVarf()->getInfo());
-                pop();
-                stiva.pop();
-            }
-        }
-        return S;
-    }
-
+    Stiva_de_caractere operator-(Stiva_de_caractere&);
 };
 
 Stiva_de_caractere::Stiva_de_caractere(){
@@ -112,10 +95,9 @@ void Stiva_de_caractere::push(char c){
     }
 }
 
-void Stiva_de_caractere::pop(){//corect?
+void Stiva_de_caractere::pop(){
     if(vf == nullptr){cout<<"Stiva goala\n";}
     else{
-        Nod *iese = vf;
         vf = vf -> getNext();
     }
 }
@@ -145,7 +127,7 @@ istream& operator>> (istream& in, Stiva_de_caractere& s)
     return in;
 }
 
-ostream& operator<< (ostream& out, Stiva_de_caractere &s)//nu afiseaza
+ostream& operator<< (ostream& out, Stiva_de_caractere &s)
 {
     while(s.isempty()!=0)
     {
@@ -163,85 +145,82 @@ string Stiva_de_caractere::inversare(string &inv){
     }
     inv.clear();//gol
     for(i=0;i<n;i++){
-        inv.push_back(getVarf()->getInfo());//cba?
+        inv.push_back(getVarf()->getInfo());
         pop();
     }
     return inv;
 
 }
 
-//Stiva_de_caractere Stiva_de_caractere::operator-(Stiva_de_caractere &stiva){
-//    Stiva_de_caractere S;
-//    while(isempty() != 0 || stiva.isempty() != 0){
-//
-//        if(getVarf()->getInfo()> stiva.getVarf()->getInfo()){
-//            S.push(getVarf()->getInfo());
-//            pop();
-//            stiva.pop();
-//        }
-//        else {
-//            S.push(stiva.getVarf()->getInfo());
-//            pop();
-//            stiva.pop();
-//        }
-//    }
-//    return S;
-//}
+Stiva_de_caractere Stiva_de_caractere::operator-(Stiva_de_caractere &S1){
+    Stiva_de_caractere S2;
+    while(isempty() != 0 && S1.isempty() != 0) {
+            if (getVarf()->getInfo() > S1.getVarf()->getInfo()) {
+                S2.push(getVarf()->getInfo());
+                top();
+                pop();
+                S1.pop();
+                S2.top();
+            }
+            else {
+            S2.push(S1.getVarf()->getInfo());
+            S1.top();
+            pop();
+            S1.pop();
+            S2.top();
+            }
+    }
+    return S2;
+}
 
 
 int main(){
     char chr;
     string s,sir;
 
-    Stiva_de_caractere S1,S2,S3,S4,S5,S6;
+    Stiva_de_caractere S1,S2,S3,S4,S5;
     if(S1.isempty() == 1){cout<<"S1 nu e goala\n";}
     else cout<<"S1 e goala\n";
+    cout<<"insereaza caracter";
     cin>>chr;
     S1.push(chr);
     if(S1.isempty() == 1){cout<<"S1 nu e goala\n";}
     else cout<<"S1 e goala\n";
     S1.top();
+    cout<<"Pop";
     S1.pop();
     if(S1.isempty() == 1){cout<<"S1 nu e goala\n";}
     else cout<<"S1 e goala\n";
+    cout<<"insereaza sir pentru testarea functiei de inversare";
     cin>>s;
     sir = S2.inversare(s);
     cout<<"Inversul sirului s este "<<sir<<"\n";
+    cout<<"insereaza caracter";
     cin>>chr;
     S1.push(chr);
+    cout<<"insereaza caracter";
     cin>>chr;
     S1.push(chr);
     if(S1.isempty() == 1){cout<<"S1 nu e goala\n";}
     else cout<<"S1 e goala\n";
+    S1.top();
     cout<<"Supraincarcarea operatorului << "<<S1<<"\n";
+    cout<<"insereaza prima sitiva pentru scadere";
     cin>>S3;
-    cout<<S3<<"\n";
-    S4.push('E');
-    S4.push('X');
-    S4.push('A');
-    S4.push('M');
-    S4.push('E');
-    S4.push('N');
-    cout<<S4<<"\n";
-    if(S4.isempty() == 1){cout<<"S4 nu e goala\n";}
-    else cout<<"S4 e goala\n";
+    cout<<"insereaza a doua stiva pentru scadere";
+    cin>>S4;
+    S3-S4 = S5;
+    if(S5.isempty() == 1){cout<<"S5 nu e goala\n";}
+    else cout<<"S5 e goala\n";
+    cout<<"Supraincarcarea operatorului - este:"<<S5<<"\n";//nu afiseaza
 
-    S5.push('P');
-    S5.push('O');
-    S5.push('O');
-    S5.push('L');
-    S5.push('A');
-    S5.push('B');
-    S5.push('O');
-    S5.push('R');
-    S5.push('A');
-    S5.push('T');
-    S5.push('O');
-    S5.push('R');
-
-    S6 = S4-S5;
-    cout<<"Supraincarcarea operatorului - este:"<<S6<<"\n";
-
-
+    return 0;
 
 }
+
+/*
+6
+e x a m e n
+12
+p o o l a b o r a t o r
+ */
