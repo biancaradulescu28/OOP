@@ -1,4 +1,4 @@
-#OOP
+OOP
 Projects:
   - Stack
   - Complex numbers
